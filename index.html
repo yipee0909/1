@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Par Perfeito</title>
+  <link rel="icon" href="logo303 (1).png" type="image/png">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background-color: #fdf1f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      flex-direction: column;
+    }
+
+    .quiz-container {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      padding: 24px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      position: relative;
+    }
+
+    .logo {
+      width: 64px;
+      height: auto;
+      margin-bottom: 16px;
+    }
+
+    .progress-bar {
+      height: 8px;
+      background: #ffe6ef;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background-color: #cc3366;
+      width: 0%;
+      transition: width 0.3s ease-in-out;
+    }
+
+    .progress-text {
+      font-size: 14px;
+      color: #cc3366;
+      margin-bottom: 12px;
+    }
+
+    h2 {
+      font-size: 20px;
+      margin-bottom: 20px;
+      color: #cc3366;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .option {
+      background-color: #ffe6ef;
+      border: none;
+      padding: 14px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      font-size: 15px;
+      text-align: left;
+    }
+
+    .option:hover {
+      background-color: #ffcce0;
+    }
+
+    .final-message {
+      font-size: 18px;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .cta-button {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 16px;
+      background-color: #ff4da6;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      animation: pulsePink 1.2s infinite;
+    }
+
+    .cta-button:hover {
+      background-color: #e60073;
+    }
+
+    .cta-button.highlight {
+      background: linear-gradient(90deg, #ff66b2, #cc0066);
+      color: white;
+      box-shadow: 0 0 15px #ff99cc;
+      text-shadow: 1px 1px 2px #990033;
+    }
+
+    .cta-button.highlight:hover {
+      background: linear-gradient(90deg, #e6007a, #990033);
+    }
+
+    .copyright {
+      margin-top: 20px;
+      font-size: 12px;
+      color: #999;
+    }
+
+    @keyframes pulsePink {
+      0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,105,180, 0.7); }
+      70% { transform: scale(1.05); box-shadow: 0 0 15px 10px rgba(255,105,180, 0); }
+      100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,105,180, 0); }
+    }
+  </style>
+</head>
+<body>
+  <img src="logo303 (1).png" alt="Par Perfeito Logo" class="logo">
+  <div class="quiz-container" id="quizContainer">
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div class="progress-text" id="progressText">0%</div>
+    <h2 id="question">Carregando pergunta...</h2>
+    <div class="options" id="options"></div>
+  </div>
+  <div class="copyright">© 2025 Par Perfeito. Todos os direitos reservados.</div>
+
+  <script>
+    history.pushState(null, null, location.href);
+    window.onpopstate = function () {
+      showFinalPage();
+    };
+
+    const questions = [
+      {
+        question: "O que mais te machuca no seu relacionamento hoje?",
+        options: [
+          "😔 Parece que ele não se importa mais comigo",
+          "📱 Ele passa mais tempo no celular do que comigo",
+          "🥶 Não recebo mais carinho como antes",
+          "🙁 Me sinto sozinha mesmo estando casada",
+          "😤 Tudo virou obrigação e distância"
+        ]
+      },
+      {
+        question: "Como você se sente quando ele te ignora?",
+        options: [
+          "😢 Meu coração aperta",
+          "😔 Me sinto invisível",
+          "😞 Dá vontade de desistir",
+          "😭 Me culpo por tudo",
+          "😐 Eu finjo que está tudo bem"
+        ]
+      },
+      {
+        question: "O que você mais sente falta dele?",
+        options: [
+          "💋 Beijos com vontade",
+          "💖 Abraços apertados",
+          "🗣️ Conversas sinceras",
+          "😌 Sentir que ele me admira",
+          "🎁 Gestos simples de amor"
+        ]
+      },
+      {
+        question: "Se pudesse mudar algo agora, o que mudaria?",
+        options: [
+          "👀 Queria que ele me olhasse diferente",
+          "💞 Queria ser prioridade de novo",
+          "🔥 Voltar a ter desejo entre nós",
+          "🧠 Entender o que se passa na cabeça dele",
+          "🔄 Ter uma nova chance pro nosso amor"
+        ]
+      }
+    ];
+
+    let currentQuestion = 0;
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const quizContainer = document.getElementById("quizContainer");
+    const progressFill = document.getElementById("progressFill");
+    const progressText = document.getElementById("progressText");
+
+    function updateProgressBar() {
+      const percent = Math.round((currentQuestion / questions.length) * 100);
+      progressFill.style.width = percent + "%";
+      progressText.textContent = percent + "%";
+    }
+
+    function loadQuestion() {
+      updateProgressBar();
+      const q = questions[currentQuestion];
+      questionEl.textContent = q.question;
+      optionsEl.innerHTML = "";
+      q.options.forEach(option => {
+        const btn = document.createElement("button");
+        btn.className = "option";
+        btn.textContent = option;
+        btn.onclick = () => {
+          currentQuestion++;
+          if (currentQuestion < questions.length) {
+            loadQuestion();
+          } else {
+            showFinalPage();
+          }
+        };
+        optionsEl.appendChild(btn);
+      });
+    }
+
+    function showFinalPage() {
+      progressFill.style.width = "100%";
+      progressText.textContent = "100%";
+      quizContainer.innerHTML = `
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 100%; background-color: #cc3366;"></div>
+        </div>
+        <div class="progress-text">100%</div>
+        <h2><strong>Você merece viver um amor que te preencha</strong></h2>
+        <p class="final-message">
+          <strong>Se você chegou até aqui</strong>, é porque ainda acredita que existe algo entre vocês — e <strong>você está certa</strong>.<br><br>
+          Mas a verdade é dura: <strong>cada dia que passa sem agir pode ser o fim definitivo</strong>. 💔<br><br>
+          <strong>Assista agora ao vídeo</strong> e descubra a única forma de reacender a chama do seu relacionamento <strong>antes que seja tarde demais</strong>.
+        </p>
+        <a class="cta-button highlight" href="https://seu-site.com/oferta-final">🔥 CLIQUE AQUI E ASSISTA AGORA 🔥</a>
+      `;
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>
